@@ -1,0 +1,21 @@
+[tox]
+envlist = format, lint
+
+[testenv:format]
+description = Run black and isort to format the code
+deps =
+    black
+    isort
+commands =
+    black .
+    isort .
+
+[testenv:lint]
+description = Run flake8 for linting
+deps =
+    flake8
+commands =
+    flake8 .
+
+[flake8]
+ignore = E501,W503,E203

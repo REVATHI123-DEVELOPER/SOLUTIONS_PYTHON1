@@ -1,0 +1,41 @@
+import sqlite3
+
+
+def __connect_to_db():
+    conn = sqlite3.connect("data/insight.db")
+    cursor = conn.cursor()
+    return conn, cursor
+
+
+def __close_db(conn):
+    conn.commit()
+    conn.close()
+
+
+def insert_into_recommendation_details(
+    pr_id,
+    a_workitem_id,
+    r_workitem_id,
+    r_posted_date,
+    r_confidence,
+):
+    conn, cursor = __connect_to_db()
+    try:
+        cursor.execute(
+            """
+                INSERT INTO
+                    recommendation_details (pr_id, a_workitem_id, r_workitem_id, r_posted_date, r_confidence)
+                VALUES
+                    (?, ?, ? , ?, ?);
+            """,
+            (
+                pr_id,
+                a_workitem_id,
+                r_workitem_id,
+                r_posted_date,
+                r_confidence,
+            ),
+        )
+
+    finally:
+        __close_db(conn)

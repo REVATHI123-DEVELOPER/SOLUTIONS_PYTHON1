@@ -1,0 +1,102 @@
+import sqlite3
+
+
+def __connect_to_db():
+    conn = sqlite3.connect("data/insight.db")
+    cursor = conn.cursor()
+    return conn, cursor
+
+
+def __close_db(conn):
+    conn.commit()
+    conn.close()
+
+
+# pr_details Table Operations
+def insert_into_pr_details_table(
+    id,
+    closed_date,
+    source_ref_commit_id,
+    target_ref_commit_id,
+    file_path,
+    original_file_path,
+    file_type,
+    original_file_type,
+    change_type,
+):
+    conn, cursor = __connect_to_db()
+    try:
+        cursor.execute(
+            """
+                    INSERT INTO
+                        pr_details (id, closed_date, source_ref_commit_id, target_ref_commit_id, file_path, original_file_path, file_type, original_file_type, change_type)
+                    VALUES
+                        (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                """,
+            (
+                id,
+                closed_date,
+                source_ref_commit_id,
+                target_ref_commit_id,
+                file_path,
+                original_file_path,
+                file_type,
+                original_file_type,
+                change_type,
+            ),
+        )
+    finally:
+        __close_db(conn)
+
+
+def get_pr_detail(id):
+    conn, cursor = __connect_to_db()
+    try:
+        cursor.execute(
+            """
+                SELECT
+                    *
+                FROM
+                    pr_details
+                WHERE
+                    id=?;
+            """,
+            (id,),
+        )
+        rows = cursor.fetchall()
+        return rows
+    finally:
+        __close_db(conn)
+
+
+def get_all_pr_ids(closed_date_asc=False):
+    conn, cursor = __connect_to_db()
+    try:
+        if closed_date_asc:
+            cursor.execute(
+                """
+                    SELECT DISTINCT
+                        id
+                    FROM
+                        pr_details
+                    ORDER BY
+                        closed_date
+                    ASC;
+                """
+            )
+        else:
+            cursor.execute(
+                """
+                    SELECT DISTINCT
+                        id
+                    FROM
+                        pr_details;
+                """
+            )
+        rows = (
+            cursor.fetchall()
+        )  # This returns a list of tuples, e.g., [(1,), (2,), (3,)]
+        ids = [row[0] for row in rows]  # Extract the first element from each tuple
+        return ids
+    finally:
+        __close_db(conn)

@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+
+from collector import collect_workitem_details
+
+
+def run():
+    collect_workitem_details.run()
+
+if __name__ == "__main__":
+    run()

@@ -1,0 +1,11 @@
+#!/usr/bin/env python
+
+from collector import construct_pr_change_details
+
+
+def run():
+    # This function will caluclate the file/class/method level changes for the PRs
+    construct_pr_change_details.run()
+
+if __name__ == "__main__":
+    run()
